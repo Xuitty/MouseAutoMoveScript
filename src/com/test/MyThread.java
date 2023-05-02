@@ -1,6 +1,8 @@
 package com.test;
 
 import java.awt.AWTException;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.MouseInfo;
 import java.awt.Robot;
 
@@ -18,6 +20,9 @@ public class MyThread extends Thread {
 
 	@Override
 	public void run() {
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		int maxWidth = gd.getDisplayMode().getWidth();
+		int maxHeight = gd.getDisplayMode().getHeight();
 		Robot robot = null;
 		try {
 			robot = new Robot();
@@ -32,8 +37,8 @@ public class MyThread extends Thread {
 			int x1 = MouseInfo.getPointerInfo().getLocation().x;
 			int y1 = MouseInfo.getPointerInfo().getLocation().y;
 			if (x == x1 && y == y1) {
-				robot.mouseMove((int) Math.round(Math.random() * 100 + 0.1D),
-						(int) Math.round(Math.random() * 100 + 0.1D));
+				robot.mouseMove((int) Math.floor(Math.random() * maxWidth) + 1,
+						(int) Math.floor(Math.random() * maxHeight) + 1);
 				x1 = MouseInfo.getPointerInfo().getLocation().x;
 				y1 = MouseInfo.getPointerInfo().getLocation().y;
 				System.out.println(++times);
