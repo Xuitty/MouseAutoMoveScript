@@ -3,11 +3,15 @@ package com.test;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Main {
+import org.junit.jupiter.api.Test;
 
+public class Main {
+	@SuppressWarnings({ "unused", "resource" })
 	public static void main(String[] args) {
 		MyThread t = null;
 		int option = 0;
+		boolean init = true;
+		Long time = null;
 		String guide = "|| Please insert option number";
 		String select1 = "| 1:start(120s)";
 		String select2 = "| 2:start with custom duration";
@@ -25,8 +29,15 @@ public class Main {
 			System.out.println("========================================================================");
 			Scanner input = new Scanner(System.in);
 			try {
-				option = input.nextInt();
+				if (init && args.length != 0 && "-t".equals(args[0])) {
+					option = 2;
+					time = Long.parseLong(args[1]);
+				} else {
+					option = input.nextInt();
+				}
 			} catch (InputMismatchException e) {
+				option = 999;
+			} catch (NumberFormatException e) {
 				option = 999;
 			}
 			if (option == 1) {
@@ -43,11 +54,14 @@ public class Main {
 				for (int i = 0; i < 50; i++) {
 					System.out.println("\n");
 				}
-				System.out.println("===============Input the detect duration(second)=================");
 				if (t != null) {
 					t.interrupt();
 				}
-				Long time = input.nextLong();
+				if (time == null) {
+					System.out.println("===============Input the detect duration(second)=================");
+					time = input.nextLong();
+				} else
+					System.out.println("=========================Script Started=========================");
 				t = new MyThread(time);
 				t.start();
 			} else if (option == 3) {
@@ -72,11 +86,12 @@ public class Main {
 				break;
 			} else if (option == 999) {
 				System.out.println(
-						"********************Your Input type error********************\n********************Please type number in.********************");
+						"********************Your Input or Argument type error********************\n********************Please type number in.********************");
 
 			} else {
-				System.out.println("********************Please use the numbers on the menu********************");
+				System.out.println("*************************Please use the numbers*************************");
 			}
+			init = false;
 		}
 
 	}
@@ -90,6 +105,12 @@ public class Main {
 		}
 		String pattern = "%-" + length + "s";
 		return String.format(pattern, str).replace(' ', padChar);
+	}
+
+	@Test
+	public void argTest() {
+		String a = "123qwezxcx";
+		System.out.println(Integer.parseInt(a));
 	}
 
 }
